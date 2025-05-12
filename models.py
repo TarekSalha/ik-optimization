@@ -72,6 +72,15 @@ class Storage:
             self.wood == other.wood
         )
     
+    def __le__(self, other):
+        if not isinstance(other, Storage):
+            return NotImplemented
+        return (
+            self.gold <= other.gold and
+            self.stone <= other.stone and
+            self.wood <= other.wood
+        )
+    
     def __repr__(self):
         return f"Storage(gold={self.gold}, stone={self.stone}, wood={self.wood})"
     

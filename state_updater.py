@@ -1,6 +1,6 @@
 import models as md
 import params as pr
-from cost_calculator import calculate_added_production_while_upgrade, calculate_production_per_hour, calculate_storage_capacity, calculate_upgrade_costs, calculate_upgrade_time
+from cost_calculator import calculate_added_production_while_operation, calculate_production_per_hour, calculate_storage_capacity, calculate_upgrade_costs, calculate_upgrade_time, calculate_wait_time
 
 def mine_diff_is_in_range(state: md.State) -> bool:
     """Checks if the difference between the highest and lowest mine levels is within the allowed range."""
@@ -27,11 +27,13 @@ def update_state_build_cargo_ship(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_cargo_ship_gold, pr.base_costs_cargo_ship_stone, pr.base_costs_cargo_ship_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=md.Level.L0)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_cargo_ship, level=md.Level.L0, facility_level=state.harbor_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
-    
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
+
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -60,11 +62,13 @@ def update_state_build_frigate(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_fregate_gold, pr.base_costs_fregate_stone, pr.base_costs_fregate_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=md.Level.L0)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_fregate, level=md.Level.L0, facility_level=state.harbor_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -91,11 +95,13 @@ def update_state_build_stone_hurler(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_stone_hurler_gold, pr.base_costs_stone_hurler_stone, pr.base_costs_stone_hurler_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=md.Level.L0)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_stone_hurler, level=md.Level.L0, facility_level=state.garrison_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -125,11 +131,13 @@ def update_state_upgrade_gold_mine(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_gold_mine_gold, pr.base_costs_gold_mine_stone, pr.base_costs_gold_mine_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.gold_mine_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_gold_mine, level=state.gold_mine_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=md.Level(state.gold_mine_level.value + 1),
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -158,11 +166,13 @@ def update_state_upgrade_stone_mine(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_stone_mine_gold, pr.base_costs_stone_mine_stone, pr.base_costs_stone_mine_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.stone_mine_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_stone_mine, level=state.stone_mine_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=md.Level(state.stone_mine_level.value + 1),
         wood_mine_level=state.wood_mine_level,
@@ -191,11 +201,13 @@ def update_state_upgrade_wood_mine(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_wood_mine_gold, pr.base_costs_wood_mine_stone, pr.base_costs_wood_mine_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.wood_mine_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_wood_mine, level=state.wood_mine_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=md.Level(state.wood_mine_level.value + 1),
@@ -223,11 +235,13 @@ def update_state_upgrade_fortress(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_fortress_gold, pr.base_costs_fortress_stone, pr.base_costs_fortress_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.fortress_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_fortress, level=state.fortress_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
-    
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
+
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -254,11 +268,13 @@ def update_state_upgrade_garrison(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_garrison_gold, pr.base_costs_garrison_stone, pr.base_costs_garrison_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.garrison_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_garrison, level=state.garrison_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -285,11 +301,13 @@ def update_state_upgrade_harbor(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_harbor_gold, pr.base_costs_harbor_stone, pr.base_costs_harbor_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.harbor_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_harbor, level=state.harbor_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,
@@ -354,7 +372,7 @@ def is_possible_upgrade_warehouse(state: md.State) -> bool:
 
     return (
         state.fortress_level.value >= 1 and
-        state.warehouse_level.value < 3 and
+        state.warehouse_level.value < pr.max_level_warehouse and
         any_costs_are_above_capacity
     )
 
@@ -363,11 +381,13 @@ def update_state_upgrade_warehouse(state: md.State) -> md.State:
     base_costs = md.Storage(pr.base_costs_warehouse_gold, pr.base_costs_warehouse_stone, pr.base_costs_warehouse_wood)
     upgrade_costs = calculate_upgrade_costs(base_costs=base_costs, level=state.warehouse_level)
     upgrade_time = calculate_upgrade_time(base_time_sec=pr.base_time_warehouse, level=state.warehouse_level, facility_level=state.fortress_level)
-    added_production = calculate_added_production_while_upgrade(state, upgrade_time, pr.initial_rate_gold, pr.initial_rate_stone, pr.initial_rate_wood)
-    new_duration = state.current_duration + upgrade_time
+    added_production = calculate_added_production_while_operation(state, upgrade_time)
+    wait_time = calculate_wait_time(state, upgrade_costs)
+    added_wait_production = calculate_added_production_while_operation(state, wait_time)
+    new_duration = state.current_duration + upgrade_time + wait_time
 
     return md.State(
-        storage=state.storage - upgrade_costs + added_production,
+        storage=state.storage - upgrade_costs + added_production + added_wait_production,
         gold_mine_level=state.gold_mine_level,
         stone_mine_level=state.stone_mine_level,
         wood_mine_level=state.wood_mine_level,

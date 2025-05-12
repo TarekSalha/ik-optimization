@@ -8,9 +8,10 @@ initial_rate_gold: float = 4.5
 initial_rate_wood: float = 4.0
 initial_rate_stone: float = 3.0
 
-max_number_stone_hurler: int = 2
-max_level_mines: int = 2
-max_diff_level_mines: int = 3
+max_number_stone_hurler: int = 5
+max_level_mines: int = 10
+max_level_warehouse: int = 10
+max_diff_level_mines: int = 5
 
 base_costs_fortress_gold: int = 150
 base_costs_fortress_stone: int = 120
