@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from itertools import count
 import enum
+import sys
 import params as pr
 
 class Level(enum.Enum):
@@ -58,6 +59,7 @@ class State:
     num_frigates: int
     num_cargo_ships: int
     num_stone_hurler: int
+    current_duration: int
     
     @property
     def is_final_state(self) -> bool:
