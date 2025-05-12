@@ -1,4 +1,5 @@
 import logging
+import datetime
 from typing import List, Tuple
 import igraph as ig
 
@@ -29,12 +30,12 @@ def explore_states(states: List[md.State], transitions: List[Tuple[int, int, int
         
         # Add the new state to the list of states and edges
         states.append(new_state)
-        transitions.append((current_state.id, new_state.id, new_state.current_duration, action))
+        transitions.append((current_state.id, new_state.id, new_state.current_duration - current_state.current_duration, action))
         logging.debug(f"Transition from state {current_state.id} to state {new_state.id} with action {action.name} and duration {new_state.current_duration}")
 
         # Check if the new state is a final state
         if new_state.is_final_state:
-            logging.info(f"Final state reached at id: {new_state.id} with duration: {new_state.current_duration}")
+            logging.info(f"Final state reached at id: {new_state.id} with duration: {new_state.current_duration}s")
             global_state.update_lowest_known_duration(new_state.current_duration)
             continue
         
@@ -89,7 +90,7 @@ def main():
         shortest_path = min(shortest_paths, key=lambda path: sum([g.es[edge]["weight"] for edge in path]))
         shortest_distance = sum([g.es[edge]["weight"] for edge in shortest_path])
         action_labels = [g.es[edge]["action"] for edge in shortest_path]  # Retrieve actions from edge attributes
-        print(f"Shortest Path Actions: {action_labels}, Distance: {shortest_distance}")
+        print(f"Shortest Path Actions: {action_labels}, Duration: {shortest_distance} {str(datetime.timedelta(seconds=shortest_distance))} (HH:MM:SS)")
     else:
         print("No paths found.")
 
