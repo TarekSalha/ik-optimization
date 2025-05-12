@@ -33,7 +33,7 @@ class Action(enum.Enum):
     UpgradeStoneMine = 2
     UpgradeWoodMine = 3
     UpgradeGarrison = 4
-    UpgradeHarbour = 5
+    UpgradeHarbor = 5
     UpgradeWarehouse = 6
     BuildCargoShip = 7
     BuildFrigate = 8
@@ -44,6 +44,39 @@ class Storage:
     gold: int
     stone: int
     wood: int
+
+    def __add__(self, other):
+        if not isinstance(other, Storage):
+            return NotImplemented
+        return Storage(
+            gold=self.gold + other.gold,
+            stone=self.stone + other.stone,
+            wood=self.wood + other.wood
+        )
+    
+    def __sub__(self, other):
+        if not isinstance(other, Storage):
+            return NotImplemented
+        return Storage(
+            gold=self.gold - other.gold,
+            stone=self.stone - other.stone,
+            wood=self.wood - other.wood
+        )
+    
+    def __eq__(self, other):
+        if not isinstance(other, Storage):
+            return NotImplemented
+        return (
+            self.gold == other.gold and
+            self.stone == other.stone and
+            self.wood == other.wood
+        )
+    
+    def __repr__(self):
+        return f"Storage(gold={self.gold}, stone={self.stone}, wood={self.wood})"
+    
+    def __hash__(self):
+        return hash((self.gold, self.stone, self.wood))
 
 @dataclass(frozen=True)
 class State:

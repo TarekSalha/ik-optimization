@@ -27,25 +27,25 @@ base_costs_warehouse_stone: int = 60
 base_costs_warehouse_wood: int = 90
 base_time_warehouse: int = 915
 
-base_costs_harbour_gold: int = 150
-base_costs_harbour_stone: int = 160
-base_costs_harbour_wood: int = 120
-base_time_harbour: int = 1220
+base_costs_harbor_gold: int = 150
+base_costs_harbor_stone: int = 160
+base_costs_harbor_wood: int = 120
+base_time_harbor: int = 1220
 
-base_costs_goldmine_gold: int = 90
-base_costs_goldmine_stone: int = 60
-base_costs_goldmine_wood: int = 60
-base_time_goldmine: int = 993
+base_costs_gold_mine_gold: int = 90
+base_costs_gold_mine_stone: int = 60
+base_costs_gold_mine_wood: int = 60
+base_time_gold_mine: int = 993
 
-base_costs_stonemine_gold: int = 60
-base_costs_stonemine_stone: int = 60
-base_costs_stonemine_wood: int = 60
-base_time_stonemine: int = 993
+base_costs_stone_mine_gold: int = 60
+base_costs_stone_mine_stone: int = 60
+base_costs_stone_mine_wood: int = 60
+base_time_stone_mine: int = 993
 
-base_costs_woodmine_gold: int = 90
-base_costs_woodmine_stone: int = 70
-base_costs_woodmine_wood: int = 60
-base_time_woodmine: int = 1192
+base_costs_wood_mine_gold: int = 90
+base_costs_wood_mine_stone: int = 70
+base_costs_wood_mine_wood: int = 60
+base_time_wood_mine: int = 1192
 
 base_costs_stone_hurler_gold: int = 50
 base_costs_stone_hurler_stone: int = 10
