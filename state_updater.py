@@ -1,6 +1,6 @@
 import models as md
 import params as pr
-from cost_calculator import calculate_added_production_while_operation, calculate_production_per_hour, calculate_storage_capacity, calculate_upgrade_costs, calculate_upgrade_time, calculate_wait_time
+from cost_calculator import calculate_added_production_while_operation, calculate_storage_capacity, calculate_upgrade_costs, calculate_upgrade_time, calculate_wait_time
 
 def mine_diff_is_in_range(state: md.State) -> bool:
     """Checks if the difference between the highest and lowest mine levels is within the allowed range."""
