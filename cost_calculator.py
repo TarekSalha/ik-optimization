@@ -39,8 +39,8 @@ def calculate_wait_time(current_state: md.State, next_costs: md.Storage) -> int:
     if next_costs <= current_state.storage:
         return 0
     else:
-        production_time_missing_gold = (next_costs.gold - current_state.storage.gold)/calculate_production_per_hour(base_production=pr.initial_rate_gold, level=current_state.gold_mine_level)
-        production_time_missing_stone = (next_costs.stone - current_state.storage.stone)/calculate_production_per_hour(base_production=pr.initial_rate_stone, level=current_state.stone_mine_level)
-        production_time_missing_wood = (next_costs.wood - current_state.storage.wood)/calculate_production_per_hour(base_production=pr.initial_rate_wood, level=current_state.wood_mine_level)
+        production_time_missing_gold = (next_costs.gold - current_state.storage.gold)/calculate_production_per_hour(base_production=pr.initial_rate_gold, level=current_state.gold_mine_level) * 3600
+        production_time_missing_stone = (next_costs.stone - current_state.storage.stone)/calculate_production_per_hour(base_production=pr.initial_rate_stone, level=current_state.stone_mine_level) * 3600
+        production_time_missing_wood = (next_costs.wood - current_state.storage.wood)/calculate_production_per_hour(base_production=pr.initial_rate_wood, level=current_state.wood_mine_level) * 3600
         wait_time = max(production_time_missing_gold, production_time_missing_stone, production_time_missing_wood)
     return math.floor(wait_time)

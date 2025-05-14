@@ -16,26 +16,33 @@ def explore_states(states: List[md.State], transitions: List[Tuple[int, int, int
         transitions (List[Tuple[int, int, int, md.Action]]): List of transitions between states.
         current_state (md.State): The current state to explore from.
     """
-    # Check if the new state is already above the lowest known duration
+    # Check if the current state is already above the lowest known duration
     global_state = GlobalStateManager.get_global_state()
     lowest_duration = global_state.get_lowest_known_duration()
     if current_state.current_duration >= lowest_duration:
-        logging.debug(f"Skipping state {current_state.id} with duration {current_state.current_duration} as it exceeds the lowest known duration {lowest_duration}")
+        logging.debug(f"Skipping state {current_state.id} with duration {current_state.current_duration}s {str(datetime.timedelta(seconds=current_state.current_duration))} (HH:MM:SS) as it exceeds the lowest known duration {lowest_duration}")
         return
     
     # Generate all possible actions for the current state
     possible_actions = [action for action in md.Action if is_possible_action(state=current_state, action=action)]
     for action in possible_actions:
         new_state = update_state(state=current_state, action=action)
-        
+        if new_state.id % 100000 == 0:
+            logging.info(f"exploring new state with id: {new_state.id} with duration: {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS)")
+        lowest_duration = global_state.get_lowest_known_duration()
+        if new_state.current_duration >= lowest_duration:
+            logging.debug(f"Skipping state {new_state.id} with duration {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS) as it exceeds the lowest known duration {lowest_duration}")
+            continue
+
         # Add the new state to the list of states and edges
         states.append(new_state)
+        logging.debug(f"New state added with id: {new_state.id} and duration: {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS) for action: {action.name} Storage: {new_state.storage}")
         transitions.append((current_state.id, new_state.id, new_state.current_duration - current_state.current_duration, action))
-        logging.debug(f"Transition from state {current_state.id} to state {new_state.id} with action {action.name} and duration {new_state.current_duration}")
+        logging.debug(f"Transition from state {current_state.id} to state {new_state.id} with action {action.name} and duration {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS)")
 
         # Check if the new state is a final state
         if new_state.is_final_state:
-            logging.info(f"Final state reached at id: {new_state.id} with duration: {new_state.current_duration}s")
+            logging.info(f"Final state reached at id: {new_state.id} with duration: {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS)")
             global_state.update_lowest_known_duration(new_state.current_duration)
             continue
         
@@ -90,7 +97,7 @@ def main():
         shortest_path = min(shortest_paths, key=lambda path: sum([g.es[edge]["weight"] for edge in path]))
         shortest_distance = sum([g.es[edge]["weight"] for edge in shortest_path])
         action_labels = [g.es[edge]["action"] for edge in shortest_path]  # Retrieve actions from edge attributes
-        print(f"Shortest Path Actions: {action_labels}, Duration: {shortest_distance} {str(datetime.timedelta(seconds=shortest_distance))} (HH:MM:SS)")
+        print(f"Shortest Path Actions: {action_labels}, Duration: {shortest_distance}s {str(datetime.timedelta(seconds=shortest_distance))} (HH:MM:SS)")
     else:
         print("No paths found.")
 
