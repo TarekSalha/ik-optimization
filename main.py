@@ -95,9 +95,15 @@ def main():
     shortest_paths = g.get_shortest_paths(0, to=final_state_ids, weights='weight', output="epath")
     if shortest_paths:
         shortest_path = min(shortest_paths, key=lambda path: sum([g.es[edge]["weight"] for edge in path]))
-        shortest_distance = sum([g.es[edge]["weight"] for edge in shortest_path])
-        action_labels = [g.es[edge]["action"] for edge in shortest_path]  # Retrieve actions from edge attributes
-        print(f"Shortest Path Actions: {action_labels}, Duration: {shortest_distance}s {str(datetime.timedelta(seconds=shortest_distance))} (HH:MM:SS)")
+        # Output the final result as a list of applied actions and storage at every step
+        print("Shortest Path Steps:")
+        current_state = states[0]
+        print(f"Step 0: Action: Initial State, Storage: {current_state.storage}, Total Duration: {str(datetime.timedelta(seconds=current_state.current_duration))} (HH:MM:SS)")
+        for idx, edge in enumerate(shortest_path):
+            action = g.es[edge]["action"]
+            next_state_id = g.es[edge].target
+            next_state = next(s for s in states if s.id == next_state_id)
+            print(f"Step {idx+1}: Action: {action}, Storage: {next_state.storage}, Total Duration: {str(datetime.timedelta(seconds=next_state.current_duration))} (HH:MM:SS)")
     else:
         print("No paths found.")
 

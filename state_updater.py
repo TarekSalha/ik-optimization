@@ -28,7 +28,7 @@ def is_possible_build_cargo_ship(state: md.State) -> bool:
     return (
         enough_storage_available_for_upgrade(state, md.Storage(pr.base_costs_cargo_ship_gold, pr.base_costs_cargo_ship_stone, pr.base_costs_cargo_ship_wood)) and
         state.harbor_level.value >= 1 and
-        state.num_cargo_ships < 1 #and
+        state.num_cargo_ships < pr.max_number_cargo_ships #and
         #state.num_stone_hurler >= pr.max_number_stone_hurler
     )
 
@@ -69,8 +69,8 @@ def is_possible_build_frigate(state: md.State) -> bool:
     return (
         enough_storage_available_for_upgrade(state, md.Storage(pr.base_costs_fregate_gold, pr.base_costs_fregate_stone, pr.base_costs_fregate_wood)) and
         state.harbor_level.value >= 1 and
-        state.num_frigates < 1 and
-        state.num_cargo_ships >= 1 #and
+        state.num_frigates < pr.max_number_frigates and
+        state.num_cargo_ships >= pr.max_number_cargo_ships #and
         #state.num_stone_hurler >= pr.max_number_stone_hurler
     )
 
@@ -445,8 +445,8 @@ def is_possible_upgrade_warehouse(state: md.State) -> bool:
     return (
         enough_storage_available_for_upgrade(state, calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_warehouse_gold, pr.base_costs_warehouse_stone, pr.base_costs_warehouse_wood), level=state.warehouse_level)) and
         state.fortress_level.value >= 1 and
-        state.warehouse_level.value < pr.max_level_warehouse and
-        any_costs_are_above_capacity
+        state.warehouse_level.value < pr.max_level_warehouse #and
+        #any_costs_are_above_capacity # This condition might lead to situations where a warehouse upgrade would be beneficial, but is not considered
     )
 
 def update_state_upgrade_warehouse(state: md.State) -> md.State:
