@@ -14,7 +14,7 @@ max_number_cargo_ships: int = 1
 
 max_level_mines: int = 4
 max_level_warehouse: int = 0
-max_diff_level_mines: int = 3
+max_diff_level_mines: int = 4
 
 base_costs_fortress_gold: int = 150
 base_costs_fortress_stone: int = 120
