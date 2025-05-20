@@ -63,6 +63,23 @@ class Storage:
             wood=self.wood - other.wood
         )
     
+    def __mul__(self, other):
+        if isinstance(other, int):
+            return Storage(
+                gold=self.gold * other,
+                stone=self.stone * other,
+                wood=self.wood * other
+            )
+        elif isinstance(other, Storage):
+            return Storage(
+                gold=self.gold * other.gold,
+                stone=self.stone * other.stone,
+                wood=self.wood * other.wood
+            )
+        else:
+            return NotImplemented
+
+    
     def __eq__(self, other):
         if not isinstance(other, Storage):
             return NotImplemented

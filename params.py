@@ -2,7 +2,7 @@ initial_gold: int = 1000
 initial_wood: int = 1000
 initial_stone: int = 1000
 
-initial_warehouse_capacity: int  = 1000
+initial_warehouse_capacity: int  = 500
 
 initial_rate_gold: float = 4.5
 initial_rate_wood: float = 4.0
@@ -12,9 +12,11 @@ max_number_stone_hurler: int = 5
 max_number_frigates: int = 1
 max_number_cargo_ships: int = 1
 
-max_level_mines: int = 4
-max_level_warehouse: int = 0
-max_diff_level_mines: int = 4
+max_level_mines: int = 7                    # it is quite unlikely that you will find effective strategies above this level
+max_level_warehouse: int = 4                # the maximum allowed level of the warehouse
+max_diff_level_mines: int = 10
+
+cost_estimation_parameter: float = 0.95     # determines how much the algorithm should underestimate needed time to reach a final state, do not set to >1.0
 
 base_costs_fortress_gold: int = 150
 base_costs_fortress_stone: int = 120

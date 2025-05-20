@@ -3,6 +3,7 @@ import datetime
 from typing import List, Tuple
 import igraph as ig
 
+from cost_calculator import estimate_remaining_time
 from global_state_manager import GlobalStateManager
 import models as md
 import params as pr
@@ -19,7 +20,8 @@ def explore_states(states: List[md.State], transitions: List[Tuple[int, int, int
     # Check if the current state is already above the lowest known duration
     global_state = GlobalStateManager.get_global_state()
     lowest_duration = global_state.get_lowest_known_duration()
-    if current_state.current_duration >= lowest_duration:
+    estimated_duration_current_state = estimate_remaining_time(current_state)
+    if (current_state.current_duration + estimated_duration_current_state) >= lowest_duration:
         logging.debug(f"Skipping state {current_state.id} with duration {current_state.current_duration}s {str(datetime.timedelta(seconds=current_state.current_duration))} (HH:MM:SS) as it exceeds the lowest known duration {lowest_duration}")
         return
     
@@ -28,9 +30,10 @@ def explore_states(states: List[md.State], transitions: List[Tuple[int, int, int
     for action in possible_actions:
         new_state = update_state(state=current_state, action=action)
         if new_state.id % 100000 == 0:
-            logging.info(f"exploring new state with id: {new_state.id} with duration: {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS)")
+            logging.info(f"exploring new state with id: {new_state.id}")
+        estimated_duration_new_state = estimate_remaining_time(new_state)
         lowest_duration = global_state.get_lowest_known_duration()
-        if new_state.current_duration >= lowest_duration:
+        if (new_state.current_duration + estimated_duration_new_state) >= lowest_duration:
             logging.debug(f"Skipping state {new_state.id} with duration {new_state.current_duration}s {str(datetime.timedelta(seconds=new_state.current_duration))} (HH:MM:SS) as it exceeds the lowest known duration {lowest_duration}")
             continue
 

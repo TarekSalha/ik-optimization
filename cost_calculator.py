@@ -44,3 +44,30 @@ def calculate_wait_time(current_state: md.State, next_costs: md.Storage) -> int:
         production_time_missing_wood = (next_costs.wood - current_state.storage.wood)/calculate_production_per_hour(base_production=pr.initial_rate_wood, level=current_state.wood_mine_level) * 3600
         wait_time = max(production_time_missing_gold, production_time_missing_stone, production_time_missing_wood)
     return math.floor(wait_time)
+
+def estimate_remaining_time(current_state: md.State) -> int:
+    """Schätzt die verbleibende Zeit in Sekunden, bis ein final_state erreicht wird.
+    Dazu werden die Upgradekosten für alle Einheiten und notwendigen Gebäude addiert und mit der aktuellen Produktionsrate dividiert."""
+    total_costs_stone_hurler = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_stone_hurler_gold, pr.base_costs_stone_hurler_stone, pr.base_costs_stone_hurler_wood), level=md.Level.L0)
+    total_costs_frigate = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_fregate_gold, pr.base_costs_fregate_stone, pr.base_costs_fregate_wood), level=md.Level.L0)
+    total_costs_cargo_ship = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_cargo_ship_gold, pr.base_costs_cargo_ship_stone, pr.base_costs_cargo_ship_wood), level=md.Level.L0)
+
+    total_costs_harbor = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_harbor_gold, pr.base_costs_harbor_stone, pr.base_costs_harbor_wood), level=current_state.harbor_level)
+    total_costs_fortress = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_fortress_gold, pr.base_costs_fortress_stone, pr.base_costs_fortress_wood), level=current_state.fortress_level)
+    total_costs_garrison = calculate_upgrade_costs(base_costs=md.Storage(pr.base_costs_garrison_gold, pr.base_costs_garrison_stone, pr.base_costs_garrison_wood), level=current_state.garrison_level)
+
+    total_costs_for_final_state: md.Storage = (
+        total_costs_stone_hurler * (pr.max_number_stone_hurler - current_state.num_stone_hurler) +
+        total_costs_frigate * (pr.max_number_frigates - current_state.num_frigates) +
+        total_costs_cargo_ship * (pr.max_number_cargo_ships - current_state.num_cargo_ships) +
+        total_costs_harbor * (1 - current_state.harbor_level.value) +
+        total_costs_fortress * (5 - current_state.fortress_level.value) +
+        total_costs_garrison * (1 - current_state.garrison_level.value)
+    )
+    remaining_costs = total_costs_for_final_state - current_state.storage
+    remaining_time = max(
+        remaining_costs.gold / calculate_production_per_hour(base_production=pr.initial_rate_gold, level=current_state.gold_mine_level) * 3600,
+        remaining_costs.stone / calculate_production_per_hour(base_production=pr.initial_rate_stone, level=current_state.stone_mine_level) * 3600,
+        remaining_costs.wood / calculate_production_per_hour(base_production=pr.initial_rate_wood, level=current_state.wood_mine_level) * 3600,
+        0)
+    return math.floor(remaining_time * pr.cost_estimation_parameter)
