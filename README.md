@@ -19,44 +19,29 @@ This project explores and optimizes state transitions for a resource management 
 ## Installation
 
 1. **Clone the repository:**
+
     ```bash
     git clone <your-repo-url>
     cd ik-optimization
     ```
 
 2. **Install [uv](https://github.com/astral-sh/uv):**
-    
+
     Install UV using the official standalone installer
 
     **macOS and Linux:**
+
     ```bash
     curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
 
     **Windows:**
+
     ```powershell
     powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
     ```
 
-    *Tip:* UV can also be installed via `pip`, Homebrew, and other  methods. Refer to the [installation page](https://docs.astral.sh/    uv/getting-started/installation/) for more options.
-
-3. **Initialize and activate a virtual environment using uv:**
-    
-    ```bash
-    uv venv .venv
-    # On Windows:
-    .venv\Scripts\activate
-    # On macOS/Linux:
-    source .venv/bin/activate
-    uv init
-    ```
-
-4. **Install dependencies using uv:**
-
-    If `requirements.txt` is missing, install manually:
-    ```bash
-    uv add python-igraph
-    ```
+    *Tip:* UV can also be installed via `pip`, Homebrew, and other  methods. Refer to the [installation page](https://docs.astral.sh/uv/getting-started/installation/) for more options.
 
 ## Usage
 
@@ -65,7 +50,17 @@ Run the main optimization script using [uv](https://github.com/astral-sh/uv):
 ```bash
 uv run main.py
 ```
-Depending on the chosen parameters, the script runs from less than a minute to multiple hours.
+
+### Expected Output
+
+When you run the script, it will:
+
+- Print a summary of the initial and final resource states.
+- Display the shortest sequence of actions (state transitions) required to reach the final state.
+- Show the total time and resources consumed along the optimal path.
+- Output detailed logs or progress updates, depending on the verbosity settings.
+
+The output helps you understand the optimal steps and resource usage for your scenario.
 
 ## Conversion Algorithm
 
