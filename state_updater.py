@@ -497,18 +497,18 @@ def update_state(state: md.State, action: md.Action) -> md.State:
 
 # Define the action strategies in a dictionary for easy access
 ACTION_STRATEGIES = {
-        md.Action.BuildCargoShip: {
-            "is_possible": is_possible_build_cargo_ship,
-            "update_state": update_state_build_cargo_ship
-        },
-        md.Action.BuildFrigate: {
-            "is_possible": is_possible_build_frigate,
-            "update_state": update_state_build_frigate
-        },
-        md.Action.BuildStoneHurler: {
-            "is_possible": is_possible_build_stone_hurler,
-            "update_state": update_state_build_stone_hurler
-        },
+        # md.Action.BuildCargoShip: {
+        #     "is_possible": is_possible_build_cargo_ship,
+        #     "update_state": update_state_build_cargo_ship
+        # },
+        # md.Action.BuildFrigate: {
+        #     "is_possible": is_possible_build_frigate,
+        #     "update_state": update_state_build_frigate
+        # },
+        # md.Action.BuildStoneHurler: {
+        #     "is_possible": is_possible_build_stone_hurler,
+        #     "update_state": update_state_build_stone_hurler
+        # },
         md.Action.UpgradeGoldMine: {
             "is_possible": is_possible_upgrade_gold_mine,
             "update_state": update_state_upgrade_gold_mine
@@ -521,18 +521,18 @@ ACTION_STRATEGIES = {
             "is_possible": is_possible_upgrade_wood_mine,
             "update_state": update_state_upgrade_wood_mine
         },
-        md.Action.UpgradeFortress: {
-            "is_possible": is_possible_upgrade_fortress,
-            "update_state": update_state_upgrade_fortress
-        },
-        md.Action.UpgradeGarrison: {
-            "is_possible": is_possible_upgrade_garrison,
-            "update_state": update_state_upgrade_garrison
-        },
-        md.Action.UpgradeHarbor: {
-            "is_possible": is_possible_upgrade_harbor,
-            "update_state": update_state_upgrade_harbor
-        },
+        # md.Action.UpgradeFortress: {
+        #     "is_possible": is_possible_upgrade_fortress,
+        #     "update_state": update_state_upgrade_fortress
+        # },
+        # md.Action.UpgradeGarrison: {
+        #     "is_possible": is_possible_upgrade_garrison,
+        #     "update_state": update_state_upgrade_garrison
+        # },
+        # md.Action.UpgradeHarbor: {
+        #     "is_possible": is_possible_upgrade_harbor,
+        #     "update_state": update_state_upgrade_harbor
+        # },
         md.Action.UpgradeWarehouse: {
             "is_possible": is_possible_upgrade_warehouse,
             "update_state": update_state_upgrade_warehouse

@@ -28,16 +28,16 @@ class Level(enum.Enum):
     L20 = 20
 
 class Action(enum.Enum):
-    UpgradeFortress = 0
+    #UpgradeFortress = 0
     UpgradeGoldMine = 1
     UpgradeStoneMine = 2
     UpgradeWoodMine = 3
-    UpgradeGarrison = 4
-    UpgradeHarbor = 5
+    #UpgradeGarrison = 4
+    #UpgradeHarbor = 5
     UpgradeWarehouse = 6
-    BuildCargoShip = 7
-    BuildFrigate = 8
-    BuildStoneHurler = 9
+    #BuildCargoShip = 7
+    #BuildFrigate = 8
+    #BuildStoneHurler = 9
 
 @dataclass(frozen=True)
 class Storage:
@@ -123,7 +123,5 @@ class State:
     @property
     def is_final_state(self) -> bool:
         return (
-            self.num_stone_hurler >= pr.max_number_stone_hurler and
-            self.num_frigates >= 1 and
-            self.num_cargo_ships >= 1
+            self.gold_mine_level == Level.L20
         )
